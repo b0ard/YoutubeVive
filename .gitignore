@@ -1,0 +1,67 @@
+#Unity generated
+
+[Bb]uild/
+[Ll]ibrary/
+[Oo]bj/
+[Tt]emp/
+UnityGenerated/
+sysinfo.txt
+ 
+# Visual Studio/MonoDevelop/XCode generated
+
+*.booproj
+/*.csproj
+*.DotSettings
+*.opensdf
+*.pdb
+*.pdb.meta
+*.pidb
+*.sdf
+/*.sln
+*.suo
+*.svd
+*.unityproj
+*.user
+*.userprefs
+Assets/UnityVS*
+DerivedData/
+ExportedObj/
+Debug/
+ipch/
+Release/
+  
+# OS generated
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Icon must end with two \r
+Icon?
+
+# Coherent generated
+
+Assets/CoherentUI/DebuggerWindows.meta
+
+# External tools
+
+Assets/SteamVR/
+Assets/SteamVR.meta
+
+min/
+min.meta
+
+# Ion, nested clone
+ion
+ion-win
+ion-mac
+
+prepros
+prepros.meta
+prepros.cfg
+prepros.cfg.meta
+
