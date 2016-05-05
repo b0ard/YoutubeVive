@@ -9,7 +9,7 @@ public class InteractableItem : MonoBehaviour {
     private float velocityFactor = 20000f;
     private Vector3 posDelta;
 
-    private float rotationFactor = 400f;
+    private float rotationFactor = 600f;
     private Quaternion rotationDelta;
     private float angle;
     private Vector3 axis;
@@ -27,6 +27,7 @@ public class InteractableItem : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
+    // TODO: Use FixedUpdate for rigidbody manipulation
 	void Update() {
 	    if (attachedWand && currentlyInteracting) {
             posDelta = attachedWand.transform.position - interactionPoint.position;
