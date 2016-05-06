@@ -2,9 +2,9 @@
 using System.Collections;
 
 public class InteractableItem : MonoBehaviour {
-    public Rigidbody rigidbody;
+    protected Rigidbody rigidbody;
 
-    private bool currentlyInteracting;
+    protected bool currentlyInteracting;
 
     private float velocityFactor = 20000f;
     private Vector3 posDelta;
@@ -19,7 +19,7 @@ public class InteractableItem : MonoBehaviour {
     private Transform interactionPoint;
 
 	// Use this for initialization
-	void Start () {
+	protected void Start () {
         rigidbody = GetComponent<Rigidbody>();
         interactionPoint = new GameObject().transform;
         velocityFactor /= rigidbody.mass;
@@ -28,7 +28,7 @@ public class InteractableItem : MonoBehaviour {
 	
 	// Update is called once per frame
     // TODO: Use FixedUpdate for rigidbody manipulation
-	void Update() {
+	protected void Update() {
 	    if (attachedWand && currentlyInteracting) {
             posDelta = attachedWand.transform.position - interactionPoint.position;
             this.rigidbody.velocity = posDelta * velocityFactor * Time.fixedDeltaTime;
