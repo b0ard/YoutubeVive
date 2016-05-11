@@ -10,10 +10,15 @@ public class CastleHUDBehavior : MonoBehaviour {
 	    textMesh = GetComponent<TextMesh>();
         castle = GameObject.FindWithTag("Castle").GetComponent<CastleBehavior>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update() {
         textMesh.transform.LookAt(Camera.main.transform.position);
-        textMesh.text = "HP: " + castle.GetHitPoints();
+
+        if (castle) {
+            textMesh.text = "HP: " + castle.GetHitPoints();
+        } else {
+            textMesh.text = "THANKS OBAMA";
+        }
 	}
 }

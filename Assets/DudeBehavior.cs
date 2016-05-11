@@ -24,7 +24,7 @@ public class DudeBehavior : InteractableItem, EnemyBehaviorInterface {
 	
 	// Update is called once per frame
 	void Update () {
-        if (transform.position.z < -20) {
+        if (transform.position.y < -20) {
             Destroy(gameObject);
         }
 

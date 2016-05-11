@@ -63,4 +63,8 @@ public class InteractableItem : MonoBehaviour {
     public bool IsInteracting() {
         return currentlyInteracting;
     }
+
+    private void OnDestroy() {
+        Destroy(interactionPoint.gameObject);
+    }
 }
