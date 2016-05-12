@@ -5,7 +5,7 @@ public class DudeBehavior : InteractableItem, EnemyBehaviorInterface {
     private CastleBehavior castle;
     private Vector3 castlePos;
 
-    private float speed = 0.1f;
+    private float speed = 0.2f;
     private float sqrAttackRange = 0.2f;
 
     private int attackPoints = 1;

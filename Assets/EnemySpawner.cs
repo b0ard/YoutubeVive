@@ -1,9 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/**
+ * Spawns enemies periodically with decreasing time interval randomly within a
+ * defined area.
+ * TODO: Spawn in a uniform circle around castle instead
+ */
 public class EnemySpawner : MonoBehaviour {
-    public GameObject dudePrefab;
+    private GameObject dudePrefab;
 
+    // Decreases minimum time to wait and maximum time (in seconds)
+    // to wait by this factor after each spawn
     private float difficultyMultiplier = 0.98f;
     private float spawnMinTimer = 2f;
     private float spawnMaxTimer = 4f;

@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/**
+ * Basic implementation of how to use a Vive controller as an input device.
+ * Can only interact with items with InteractableItem component
+ */
 public class WandController : MonoBehaviour {
     private Valve.VR.EVRButtonId gripButton = Valve.VR.EVRButtonId.k_EButton_Grip;
     private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
@@ -27,6 +31,7 @@ public class WandController : MonoBehaviour {
         }
 
         if (controller.GetPressDown(gripButton)) {
+            // Find the closest item to the hand in case there are multiple and interact with it
             float minDistance = float.MaxValue;
 
             float distance;
@@ -56,6 +61,7 @@ public class WandController : MonoBehaviour {
         }
 	}
 
+    // Adds all colliding items to a HashSet for processing which is closest
     private void OnTriggerEnter(Collider collider) {
         InteractableItem collidedItem = collider.GetComponent<InteractableItem>();
         if (collidedItem) {
@@ -63,6 +69,7 @@ public class WandController : MonoBehaviour {
         }
     }
 
+    // Remove all items no longer colliding with to avoid further processing
     private void OnTriggerExit(Collider collider) {
         InteractableItem collidedItem = collider.GetComponent<InteractableItem>();
         if (collidedItem) {

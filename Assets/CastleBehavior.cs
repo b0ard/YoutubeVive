@@ -23,6 +23,7 @@ public class CastleBehavior : MonoBehaviour {
         return hitPoints;
     }
 
+    // Destroy all castle related objects, specifically the enemies if castle's destroyed
     private void OnDestroy() {
         GameObject[] enemyRelatedObjs = GameObject.FindGameObjectsWithTag("EnemyRelated");
 
