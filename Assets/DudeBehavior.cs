@@ -1,40 +1,60 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DudeBehavior : InteractableItem, EnemyBehaviorInterface {
+public class DudeBehavior : PhysicsInteractable {
+    // Defined by prefabs
+    public float moveSpeed;
+    public float attackRange;
+    public int attackPoints;
+    public float killThreshold;
+
     private CastleBehavior castle;
     private Vector3 castlePos;
 
-    private float speed = 0.2f;
-    private float sqrAttackRange = 0.2f;
+    private float rotateSpeed = 2f;
+    private float sqrAttackRange;
 
-    private int attackPoints = 1;
     private float attackCooldown = 1f;
-    private float killThreshold = 1.5f;
 
-    Vector3 destination;
+    private Animator animator;
+
+    private Vector3 destination;
+    private Vector3 rotateDir;
 
 	// Use this for initialization
 	void Start () {
         base.Start();
+        sqrAttackRange = attackRange * attackRange;
+
         castle = GameObject.FindWithTag("Castle").GetComponent<CastleBehavior>();
         castlePos = castle.transform.position;
+
+        animator = GetComponentInChildren<Animator>();
+
         StartCoroutine("Attack");
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (transform.position.y < -20) {
+        if (transform.position.y < -10) {
             Destroy(gameObject);
         }
 
         base.Update();
-        Move();
+        RotateAndMove();
 	}
 
-    public void Move() {
-        if (!currentlyInteracting) {
-            float step = speed * Time.deltaTime;
+    public void RotateAndMove() {
+        if (!currentlyInteracting && !IsInAttackRange()) {
+            rotateDir = Vector3.RotateTowards(transform.forward,
+                    castlePos - transform.position,
+                    Time.deltaTime * rotateSpeed,
+                    1.0F);
+
+            transform.rotation = Quaternion.LookRotation(rotateDir);
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, transform.eulerAngles.z);
+
+            float step = moveSpeed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, castlePos, step);
         }
     }
@@ -42,18 +62,30 @@ public class DudeBehavior : InteractableItem, EnemyBehaviorInterface {
     public IEnumerator Attack() {
         while (true) {
             if ((transform.position - castlePos).sqrMagnitude < sqrAttackRange) {
-                GetComponent<Renderer>().material.color = Color.red;
+                animator.SetBool("Attack", true);
                 castle.ProcessDamage(attackPoints);
             } else {
-                GetComponent<Renderer>().material.color = Color.white;
+                animator.SetBool("Attack", false);
             }
             yield return new WaitForSeconds(attackCooldown);
         }
     }
 
     public void OnCollisionEnter(Collision collision) {
+        // This should destroy both objecst...
         if (rigidbody.velocity.magnitude > killThreshold) {
             Destroy(gameObject);
+            // Destroy the other one too if it's a Physics Interactable
+            if (collision.gameObject.GetComponent<PhysicsInteractable>()) {
+                Destroy(collision.gameObject);
+            }
         }
+    }
+
+    /**
+     In attack range of Castle
+     */
+    private bool IsInAttackRange() {
+        return ((transform.position - castlePos).sqrMagnitude < sqrAttackRange);
     }
 }

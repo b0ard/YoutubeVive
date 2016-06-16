@@ -30,5 +30,11 @@ public class CastleBehavior : MonoBehaviour {
         foreach (GameObject obj in enemyRelatedObjs) {
             Destroy(obj);
         }
+
+        enemyRelatedObjs = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject obj in enemyRelatedObjs) {
+            Destroy(obj);
+        }
     }
 }

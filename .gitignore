@@ -49,8 +49,16 @@ Assets/CoherentUI/DebuggerWindows.meta
 
 # External tools
 
+Assets/Editor/
 Assets/SteamVR/
 Assets/SteamVR.meta
+Assets/Plugins/*
+Assets/Low Poly Strategy Prototyper/*
+Assets/Low Poly Strategy Prototyper.meta
+Assets/Standard Assets/*
+Assets/Standard Assets.meta
+ProjectSettings/*
+
 
 min/
 min.meta

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 /**
  * Basic implementation of how to use a Vive controller as an input device.
- * Can only interact with items with InteractableItem component
+ * Can only interact with items with InteractableBase component
  */
 public class WandController : MonoBehaviour {
     private Valve.VR.EVRButtonId gripButton = Valve.VR.EVRButtonId.k_EButton_Grip;
@@ -13,29 +13,29 @@ public class WandController : MonoBehaviour {
     private SteamVR_Controller.Device controller { get { return SteamVR_Controller.Input((int)trackedObj.index); } }
     private SteamVR_TrackedObject trackedObj;
 
-    HashSet<InteractableItem> objectsHoveringOver = new HashSet<InteractableItem>();
+    HashSet<InteractableBase> objectsHoveringOver = new HashSet<InteractableBase>();
 
-    private InteractableItem closestItem;
-    private InteractableItem interactingItem;
+    private InteractableBase closestItem;
+    private InteractableBase interactingItem;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start() {
         trackedObj = GetComponent<SteamVR_TrackedObject>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	    if (controller == null) {
+    }
+
+    // Update is called once per frame
+    void Update() {
+        if (controller == null) {
             Debug.Log("Controller not initialized");
             return;
         }
 
-        if (controller.GetPressDown(gripButton)) {
+        if (controller.GetPressDown(gripButton) || controller.GetPressDown(triggerButton)) {
             // Find the closest item to the hand in case there are multiple and interact with it
             float minDistance = float.MaxValue;
 
             float distance;
-            foreach (InteractableItem item in objectsHoveringOver) {
+            foreach (InteractableBase item in objectsHoveringOver) {
                 distance = (item.transform.position - transform.position).sqrMagnitude;
 
                 if (distance < minDistance) {
@@ -48,22 +48,29 @@ public class WandController : MonoBehaviour {
             closestItem = null;
 
             if (interactingItem) {
-                if (interactingItem.IsInteracting()) {
-                    interactingItem.EndInteraction(this);
+                // Begin Interaction should already end interaction from previous
+                if (controller.GetPressDown(gripButton)) {
+                    interactingItem.OnGripPressDown(this);
                 }
-
-                interactingItem.BeginInteraction(this);
+                if (controller.GetPressDown(triggerButton)) {
+                    interactingItem.OnTriggerPressDown(this);
+                }
             }
         }
 
         if (controller.GetPressUp(gripButton) && interactingItem != null) {
-            interactingItem.EndInteraction(this);
+            //interactingItem.EndInteraction(this);
+            interactingItem.OnGripPressUp(this);
         }
-	}
+
+        if (controller.GetPressDown(triggerButton) && interactingItem != null) {
+            interactingItem.OnTriggerPressUp(this);
+        }
+    }
 
     // Adds all colliding items to a HashSet for processing which is closest
     private void OnTriggerEnter(Collider collider) {
-        InteractableItem collidedItem = collider.GetComponent<InteractableItem>();
+        InteractableBase collidedItem = collider.GetComponent<InteractableBase>();
         if (collidedItem) {
             objectsHoveringOver.Add(collidedItem);
         }
@@ -71,7 +78,7 @@ public class WandController : MonoBehaviour {
 
     // Remove all items no longer colliding with to avoid further processing
     private void OnTriggerExit(Collider collider) {
-        InteractableItem collidedItem = collider.GetComponent<InteractableItem>();
+        InteractableBase collidedItem = collider.GetComponent<InteractableBase>();
         if (collidedItem) {
             objectsHoveringOver.Remove(collidedItem);
         }

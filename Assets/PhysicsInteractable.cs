@@ -13,9 +13,10 @@ using System.Collections;
  * more effort from the player to move, whether by investing more time (due to slower velocity)
  * or more movement (to increase the delta vector which increases the velocity).
  */
-public class InteractableItem : MonoBehaviour {
+public class PhysicsInteractable : InteractableBase {
     protected Rigidbody rigidbody;
     protected bool currentlyInteracting;
+    protected uint itemId;
 
     // velocity_obj = (hand_pos - obj_pos) * velocityFactor / rigidbody.mass
     private float velocityFactor = 20000f;
@@ -27,22 +28,22 @@ public class InteractableItem : MonoBehaviour {
     private Vector3 axis;
 
     // The controller this object is picked up by
-    private WandController attachedWand; 
+    private WandController attachedWand;
     // The point at which the object was grabbed when picked up
     private Transform interactionPoint;
 
-	// Use this for initialization
-	protected void Start () {
+    // Use this for initialization
+    protected void Start() {
         rigidbody = GetComponent<Rigidbody>();
         interactionPoint = new GameObject().transform;
         velocityFactor /= rigidbody.mass;
         rotationFactor /= rigidbody.mass;
-	}
-	
-	// Update is called once per frame
+    }
+
+    // Update is called once per frame
     // TODO: Use FixedUpdate for rigidbody manipulation
-	protected void Update() {
-	    if (attachedWand && currentlyInteracting) {
+    protected void Update() {
+        if (attachedWand && currentlyInteracting) {
             posDelta = attachedWand.transform.position - interactionPoint.position;
             this.rigidbody.velocity = posDelta * velocityFactor * Time.fixedDeltaTime;
 
@@ -55,9 +56,9 @@ public class InteractableItem : MonoBehaviour {
 
             this.rigidbody.angularVelocity = (Time.fixedDeltaTime * angle * axis) * rotationFactor;
         }
-	}
+    }
 
-    public void BeginInteraction(WandController wand) {
+    public override void OnGripPressDown(WandController wand) {
         attachedWand = wand;
         interactionPoint.position = wand.transform.position;
         interactionPoint.rotation = wand.transform.rotation;
@@ -66,7 +67,7 @@ public class InteractableItem : MonoBehaviour {
         currentlyInteracting = true;
     }
 
-    public void EndInteraction(WandController wand) {
+    public override void OnGripPressUp(WandController wand) {
         if (wand == attachedWand) {
             attachedWand = null;
             currentlyInteracting = false;
@@ -79,6 +80,8 @@ public class InteractableItem : MonoBehaviour {
 
     private void OnDestroy() {
         // Destroy the empty game object associated with interaction point
-        Destroy(interactionPoint.gameObject);
+        if (interactionPoint) {
+            Destroy(interactionPoint.gameObject);
+        }
     }
 }
