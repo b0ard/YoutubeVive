@@ -45,7 +45,7 @@ public class DudeBehavior : PhysicsInteractable {
 	}
 
     public void RotateAndMove() {
-        if (!currentlyInteracting && !IsInAttackRange()) {
+        if (!currentlyInteracting) {
             rotateDir = Vector3.RotateTowards(transform.forward,
                     castlePos - transform.position,
                     Time.deltaTime * rotateSpeed,
@@ -54,8 +54,10 @@ public class DudeBehavior : PhysicsInteractable {
             transform.rotation = Quaternion.LookRotation(rotateDir);
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, transform.eulerAngles.z);
 
-            float step = moveSpeed * Time.deltaTime;
-            transform.position = Vector3.MoveTowards(transform.position, castlePos, step);
+            if (!IsInAttackRange()) {
+                float step = moveSpeed * Time.deltaTime;
+                transform.position = Vector3.MoveTowards(transform.position, castlePos, step);
+            }
         }
     }
 
@@ -72,7 +74,6 @@ public class DudeBehavior : PhysicsInteractable {
     }
 
     public void OnCollisionEnter(Collision collision) {
-        // This should destroy both objecst...
         if (rigidbody.velocity.magnitude > killThreshold) {
             Destroy(gameObject);
             // Destroy the other one too if it's a Physics Interactable

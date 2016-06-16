@@ -22,17 +22,24 @@ public class EnemySpawner : MonoBehaviour {
     private int currentLevel = 0;
     private static readonly float LEVEL_DUR = 30f;
 
+    private Vector3 castlePos;
+
     public GameObject levelStartButton;
 
     // D = Dude; B = BigDude;
-    private string[] levelSpecs = { "10D:10B",
-                                    "10D:3B" };
+    private string[] levelSpecs = {
+        "10D:1B",
+        "10D:5B"
+    };
     private System.Random rng = new System.Random();
 
     // Use this for initialization
     void Start () {
         dudePrefab = (GameObject) Resources.Load("Dude");
         bigDudePrefab = (GameObject) Resources.Load("BigDude");
+
+        castlePos = GameObject.FindWithTag("Castle").transform.position;
+
         ShowButton();
         StartNextLevel();
 	}
@@ -48,12 +55,16 @@ public class EnemySpawner : MonoBehaviour {
             float waitTime = Random.Range(0, remainingTime / enemyCount);
 
             yield return new WaitForSeconds(waitTime);
+
+            Vector3 spawnLocation = SelectRandomPointHalfCircle();
+            Quaternion spawnOrientation = Quaternion.LookRotation(castlePos-spawnLocation);
+
             switch (spawnList[index]) {
                 case 'D':
-                    Instantiate(dudePrefab, SelectRandomPointHalfCircle(), Quaternion.identity);
+                    Instantiate(dudePrefab, spawnLocation, spawnOrientation);
                     break;
                 case 'B':
-                    Instantiate(bigDudePrefab, SelectRandomPointHalfCircle(), Quaternion.identity);
+                    Instantiate(bigDudePrefab, spawnLocation, spawnOrientation);
                     break;
                 default:
                     Debug.Log("Unknown spawn type");
