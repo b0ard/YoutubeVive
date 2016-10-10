@@ -22,7 +22,7 @@ public class PhysicsInteractable : InteractableBase {
     private float velocityFactor = 20000f;
     private Vector3 posDelta; // posDelta = (hand_pos - obj_pos)
 
-    private float rotationFactor = 600f;
+    private float rotationFactor = 2000f;
     private Quaternion rotationDelta;
     private float angle;
     private Vector3 axis;
@@ -41,11 +41,10 @@ public class PhysicsInteractable : InteractableBase {
     }
 
     // Update is called once per frame
-    // TODO: Use FixedUpdate for rigidbody manipulation
-    protected void Update() {
+    protected void FixedUpdate() {
         if (attachedWand && currentlyInteracting) {
             posDelta = attachedWand.transform.position - interactionPoint.position;
-            this.rigidbody.velocity = posDelta * velocityFactor * Time.fixedDeltaTime;
+            this.rigidbody.velocity = posDelta * Mathf.Min(velocityFactor * Time.fixedDeltaTime, 1.0f / Time.fixedDeltaTime);
 
             rotationDelta = attachedWand.transform.rotation * Quaternion.Inverse(interactionPoint.rotation);
             rotationDelta.ToAngleAxis(out angle, out axis);
@@ -54,7 +53,7 @@ public class PhysicsInteractable : InteractableBase {
                 angle -= 360;
             }
 
-            this.rigidbody.angularVelocity = (Time.fixedDeltaTime * angle * axis) * rotationFactor;
+            this.rigidbody.angularVelocity = Mathf.Min(rotationFactor * Time.fixedDeltaTime, 1.0f / Time.fixedDeltaTime) * angle * Mathf.Deg2Rad * axis;
         }
     }
 
