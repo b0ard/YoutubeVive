@@ -32,6 +32,9 @@ public class WandController : MonoBehaviour {
 
         if (controller.GetPressDown(gripButton) || controller.GetPressDown(triggerButton)) {
             // Find the closest item to the hand in case there are multiple and interact with it
+            closestItem = null;
+			interactingItem = null;
+
             float minDistance = float.MaxValue;
 
             float distance;
